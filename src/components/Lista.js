@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { View, FlatList, Text } from 'react-native'
 import { Card, Button } from 'react-native-elements';
 import Formulario from './Formulario';
@@ -8,12 +8,12 @@ const Lista = (props) => {
     const [screen, setScreen] = useState(props.screenName)
 
     const renderScreen = () => {
-        return screen == 'Lista' ? (<Lista />) : <Formulario switchScreen={setSwitch}/>;
+        return screen == 'Lista' ? (<Lista />) : <Formulario switchScreen={setSwitch} />;
     }
 
     const setSwitch = (screenName) => {
         setScreen(screenName)
-        
+
     }
 
     const setListReceived = (list) => {
@@ -21,57 +21,57 @@ const Lista = (props) => {
         console.log('Final List: ' + list)
     }
 
-    const [list, setList] = useState(['Hola', 'Hello', 'Bonjour', 'Halo'])
+    const [list, setList] = useState([])
     const [newTask, setNewTask] = useState(false)
     const [mainScreen, setMainScreen] = useState(true)
 
     console.log('Task: ' + newTask);
     console.log('Screen: ' + mainScreen);
 
-    
+
     return (
-        
+
         <View style={style.listContainer}>
             {
                 screen == 'Lista' ? (
-                list.length > 0 ? 
-                    <FlatList
-                        data = {list} renderItem = {({item}) => (
-                            <Card>
-                                <Text style={style.cards}>{item}</Text>                            
-                            </Card>
-                        )}
-                        keyExtractor = {(item, index) => {
-                            return index.toString();
-                        }}>
-                    </FlatList>
-                :   
-                    <Card>
-                        <Text style={style.cardOne}>There are not tasks :)</Text>              
-                    </Card>
+                    list.length > 0 ?
+                        <FlatList
+                            data={list} renderItem={({ item }) => (
+                                <Card>
+                                    <Text style={style.cards}>{item}</Text>
+                                </Card>
+                            )}
+                            keyExtractor={(item, index) => {
+                                return index.toString();
+                            }}>
+                        </FlatList>
+                        :
+                        <Card>
+                            <Text style={style.cardOne}>There are not tasks :)</Text>
+                        </Card>
                 ) :
 
-                (<Formulario listState={list} switchScreen={setSwitch} receiveList={setListReceived}/>)
-                         
-                    
+                    (<Formulario listState={list} switchScreen={setSwitch} receiveList={setListReceived} />)
+
+
             }
 
             {
-                screen == 'Lista' ?  (
+                screen == 'Lista' ? (
                     <View style={style.buttonContainer}>
-                        <Button title="Create a new task" onPress={() => {setNewTask(true), setMainScreen(false), setSwitch('Formulario')}}/>
+                        <Button title="Create a new task" onPress={() => { setNewTask(true), setMainScreen(false), setSwitch('Formulario') }} />
                     </View>
                 ) : null
             }
-            
-            
-             
-            
-            
+
+
+
+
+
         </View>
-            
-        
-        
+
+
+
     )
 }
 
@@ -88,9 +88,9 @@ const style = {
     },
     cardOne: {
         fontSize: 20,
-        width: 300       
+        width: 300
     },
     buttonContainer: {
-        marginTop: 150           
+        marginTop: 150
     },
 }
