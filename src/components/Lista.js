@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { View, FlatList, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import { Card, Button } from 'react-native-elements';
 import Formulario from './Formulario';
 
 const Lista = (props) => {
 
     const [screen, setScreen] = useState(props.screenName)
-
-    const renderScreen = () => {
-        return screen == 'Lista' ? (<Lista />) : <Formulario switchScreen={setSwitch} />;
-    }
+    const [list, setList] = useState([])
+    const [id, setId] = useState('')
+    const [taskEdit, setTaskEdit] = useState('')
+    const [editionMode, setEditionMode] = useState(false)
 
     const setSwitch = (screenName) => {
         setScreen(screenName)
@@ -21,55 +21,52 @@ const Lista = (props) => {
         console.log('Final List: ' + list)
     }
 
-    const [list, setList] = useState([])
-    const [newTask, setNewTask] = useState(false)
-    const [mainScreen, setMainScreen] = useState(true)
+    const setEditionModeF = (value) => {
+        setEditionMode(value)
+    }   
 
-    console.log('Task: ' + newTask);
-    console.log('Screen: ' + mainScreen);
-
+    const deleteTask = (id) => {
+        const filterList = list.filter(item => item.id !== id)
+        filterList.forEach(item => console.log('Array Filtrado: ', item.taskName))
+        setList(filterList)
+    }
+    
 
     return (
 
         <View style={style.listContainer}>
-            {
-                screen == 'Lista' ? (
-                    list.length > 0 ?
-                        <FlatList
-                            data={list} renderItem={({ item }) => (
-                                <Card>
-                                    <Text style={style.cards}>{item}</Text>
+            <ScrollView>
+                {
+                    screen == 'Lista' ? (
+                        list.length > 0 ?
+                            list.map((item) => (
+                                <Card key={item.id}>
+                                    <Text style={style.cards}>{item.taskName}</Text>
+                                    <View style={style.deleteButton}>
+                                        <Button title="Edit" buttonStyle={{backgroundColor: 'gold', marginRight: 5, width: 70}}  onPress={() => {setId(item.id), setTaskEdit(item.taskName),setEditionMode(true), setSwitch('Formulario')}}/>
+                                        <Button title="Delete" buttonStyle={{backgroundColor: 'red', width: 70}}  onPress={() => {deleteTask(item.id)}}/>
+                                    </View>
                                 </Card>
-                            )}
-                            keyExtractor={(item, index) => {
-                                return index.toString();
-                            }}>
-                        </FlatList>
-                        :
-                        <Card>
-                            <Text style={style.cardOne}>There are not tasks :)</Text>
-                        </Card>
-                ) :
+                            ))
+                            :
+                            <Card>
+                                <Text style={style.cardOne}>There are not tasks :)</Text>
+                            </Card>
+                    ) :
 
-                    (<Formulario listState={list} switchScreen={setSwitch} receiveList={setListReceived} />)
-
-
-            }
+                        (<Formulario listState={list} switchScreen={setSwitch} receiveList={setListReceived}  id={id} taskEdit={taskEdit} editionModeParameter= {editionMode}  receiveEditionMode= {setEditionModeF}/>)
+                }
+            </ScrollView>
 
             {
                 screen == 'Lista' ? (
                     <View style={style.buttonContainer}>
-                        <Button title="Create a new task" onPress={() => { setNewTask(true), setMainScreen(false), setSwitch('Formulario') }} />
+                        <Button title="Create a new task" onPress={() => { setSwitch('Formulario') }} />
                     </View>
                 ) : null
             }
 
-
-
-
-
         </View>
-
 
 
     )
@@ -79,8 +76,7 @@ export default Lista;
 
 const style = {
     listContainer: {
-        marginTop: 30,
-        alignSelf: 'stretch'
+        flex: 1
     },
     cards: {
         fontSize: 20,
@@ -91,6 +87,13 @@ const style = {
         width: 300
     },
     buttonContainer: {
-        marginTop: 150
+        alignSelf: 'flex-end',
+        padding: 5
     },
+    deleteButton: {
+        width: 65,    
+        flexDirection: 'row',
+        alignSelf: 'flex-end',
+        marginRight: 80
+    }
 }

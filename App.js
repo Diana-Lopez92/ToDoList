@@ -26,6 +26,7 @@ const App = (props) => {
   const [screen, setScreen] = useState('Lista')
 
   const renderScreen = () => {
+    console.log("Status Screen: ", screen);
     return screen == 'Lista' ? (<Lista switchScreen={setSwitch}/>) : <Formulario/>;
   }
 
